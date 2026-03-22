@@ -18,8 +18,9 @@
     left: calc(50% - 100px);
     transform-style: preserve-3d;
     transform: perspective(1000px);
-    animation: autoRun 20s linear infinite;
-    
+    animation:cardFanOut 1.2s ease-out forwards,
+     autoRun 20s linear infinite;
+    z-index: 2;
 }
 @keyframes autoRun{
     from{
@@ -53,7 +54,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    z-index: 1;
+    z-index: 12;
 }
 .banner .content h1{
     font-family: 'ICA Rubrik';
@@ -61,14 +62,45 @@
     line-height: 1em;
     color: #25283B;
     position: relative;
+    opacity: 0;
+    animation: fadeIn 3s ease-in forwards 1s;
 }
-.banner .content h1::after{
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+.banner .content h1 span {
+    /* 1. Define the colors */
+    background: linear-gradient(
+        to right, 
+        #25283B 0%,      /* Start Solid */
+        #25283B 20%,     /* End Solid (Halfway through O) */
+        #25283B 15%,
+        transparent 39%, /* End Transparent (Halfway through L) */
+        #25283B 62%,     /* Start Solid again */
+        #25283B 100%     /* End Solid (Covers rest of L and full Y) */
+    );
+    
+    /* 2. Clip the background to the letters */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* 3. Make the actual text fill transparent so the gradient shows */
+    -webkit-text-fill-color: transparent;
+    
+    display: inline-block;
+    position: relative;
+}
+
+.banner .content h1::after {
     position: absolute;
     inset: 0 0 0 0;
     content: attr(data-content);
-    z-index: 2;
-    -webkit-text-stroke: 2px #d2d2d2;
     color: transparent;
+    /* This keeps the thin white outline across the WHOLE word */
+    -webkit-text-stroke: 2px #ffffff; 
+    z-index: 20; 
+    pointer-events: none;
 }
 .banner .content .author{
     font-family: Poppins;
@@ -88,7 +120,7 @@
     background-size: auto 130%;
     background-repeat: no-repeat;
     background-position: top center;
-    
+    animation: robotReveal 1.5s ease-out forwards;
 }
 @media screen and (max-width: 1023px) {
     .banner .slider{
@@ -131,5 +163,28 @@
     }
     .banner .content h1{
         font-size: 5em;
+    }
+}
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        /* Ensure it starts and stays at the very front */
+        z-index: 20; 
+    }
+    to { 
+        opacity: 1; 
+        z-index: 20; 
+    }
+}
+@keyframes robotReveal {
+    from {
+        bottom: -100%;
+        opacity: 0;
+        z-index: 10; /* Lower than the text's 20 */
+    }
+    to {
+        bottom: 0;
+        opacity: 1;
+        z-index: 10;
     }
 }
